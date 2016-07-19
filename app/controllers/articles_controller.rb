@@ -1,5 +1,9 @@
 class ArticlesController < ApplicationController
+    # The reason why we added @article = Article.new in the ArticlesController
+    # is that otherwise @article would be nil in our view, 
+    # and calling @article.errors.any? would throw an error.
     def new
+        @article = Article.new
     end
     
     def index
@@ -15,10 +19,16 @@ class ArticlesController < ApplicationController
         # @article.save
         # redirect_to @article
   
+   
         @article = Article.new(article_params)
  
-        @article.save
-        redirect_to @article
+        if @article.save
+            redirect_to @article
+        else
+            # render method is used so that the @article object
+            # is passed back to the new template when it is rendered
+            render 'new'
+        end
     end
     
     def show
@@ -30,7 +40,4 @@ class ArticlesController < ApplicationController
            params.require(:article).permit(:title, :text)
         end
 end
-
-
-
 
